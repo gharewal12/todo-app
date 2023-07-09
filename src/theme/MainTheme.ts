@@ -11,17 +11,17 @@ export const theme = (mode: any) => createTheme({
                 },
                 divider: 'rgba(0, 0, 0, 0.12)',
                 background: {
-                    default: '#fff',
-                    paper: '#fff',
+                    default: 'hsl(0, 0%, 98%)',
+                    paper: 'hsl(0, 0%, 98%)',
                 },
                 text: {
-                    primary: '#fff',
+                    primary: 'hsl(235, 19%, 35%)',
                     secondary: 'rgba(0, 0, 0, 0.6)',
                     disabled: 'rgba(0, 0, 0, 0.38)',
                 },
                 action: {
-                    active: 'rgba(0, 0, 0, 0.54)',
-                    hover: 'rgba(0, 0, 0, 0.04)',
+                    active: 'hsl(0, 0%, 98%)',
+                    hover: 'hsl(0, 0%, 98%)',
                     selected: 'rgba(0, 0, 0, 0.08)',
                     disabled: 'rgba(0, 0, 0, 0.26)',
                     disabledBackground: 'rgba(0, 0, 0, 0.12)',
@@ -31,21 +31,51 @@ export const theme = (mode: any) => createTheme({
                 // palette values for dark mode
                 divider: 'rgba(255, 255, 255, 0.12)',
                 background: {
-                    default: '#121212',
-                    paper: '#121212',
+                    default: 'hsl(235, 21%, 11%)',
+                    paper: 'hsl(235, 21%, 11%)',
                 },
                 text: {
-                    primary: '#fff',
+                    primary: 'hsl(234, 39%, 85%)',
                     secondary: 'rgba(255, 255, 255, 0.7)',
                     disabled: 'rgba(255, 255, 255, 0.5)',
                 },
                 action: {
-                    active: '#fff',
-                    hover: 'rgba(255, 255, 255, 0.08)',
+                    active: 'hsl(235, 24%, 19%)',
+                    hover: 'hsl(235, 24%, 19%)',
                     selected: 'rgba(255, 255, 255, 0.16)',
                     disabled: 'rgba(255, 255, 255, 0.3)',
                     disabledBackground: 'rgba(255, 255, 255, 0.12)',
                 },
             }),
     },
+    typography: {
+        fontFamily: 'Outfit, sans-serif',
+    },
+    components: {
+        MuiTextField: {
+            styleOverrides: {
+                root: getTextFieldStyle(mode),
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                notchedOutline: {
+                    display: 'none'
+                }
+            }
+        }
+    }
 });
+
+const getTextFieldStyle = (mode: string) => {
+    if (mode === 'light') {
+        return {
+            background: 'hsl(0, 0%, 98%)',
+        };
+    }
+    else {
+        return {
+            background: 'hsl(237, 14%, 26%)',
+        };
+    }
+};
