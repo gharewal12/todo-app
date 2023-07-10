@@ -63,6 +63,11 @@ export const theme = (mode: any) => createTheme({
                     display: 'none'
                 }
             }
+        },
+        MuiList: {
+            styleOverrides: {
+                root: getTextFieldStyle(mode),
+            }
         }
     }
 });

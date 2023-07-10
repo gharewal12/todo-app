@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/todo-app/static/css/main.073c9b0a.css",
-    "main.js": "/todo-app/static/js/main.d57ee863.js",
+    "main.css": "/todo-app/static/css/main.3aa63849.css",
+    "main.js": "/todo-app/static/js/main.ffd8da6a.js",
     "static/js/787.2843ca88.chunk.js": "/todo-app/static/js/787.2843ca88.chunk.js",
     "static/media/bg-desktop-light.jpg": "/todo-app/static/media/bg-desktop-light.3508d620efd5a52bb4ce.jpg",
     "static/media/bg-desktop-dark.jpg": "/todo-app/static/media/bg-desktop-dark.73e47dbb723ebc772ef0.jpg",
     "index.html": "/todo-app/index.html",
     "static/media/icon-sun.svg": "/todo-app/static/media/icon-sun.910b1f9a23741afc341e95653a51f14f.svg",
     "static/media/icon-moon.svg": "/todo-app/static/media/icon-moon.6c03114b495d05f4380b3c544d9afe2a.svg",
-    "main.073c9b0a.css.map": "/todo-app/static/css/main.073c9b0a.css.map",
-    "main.d57ee863.js.map": "/todo-app/static/js/main.d57ee863.js.map",
+    "main.3aa63849.css.map": "/todo-app/static/css/main.3aa63849.css.map",
+    "main.ffd8da6a.js.map": "/todo-app/static/js/main.ffd8da6a.js.map",
     "787.2843ca88.chunk.js.map": "/todo-app/static/js/787.2843ca88.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.073c9b0a.css",
-    "static/js/main.d57ee863.js"
+    "static/css/main.3aa63849.css",
+    "static/js/main.ffd8da6a.js"
   ]
 }
