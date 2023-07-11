@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo, createContext } from "react";
 
 // MUI
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,6 +13,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
 
 // Images
 import BgWhite from "./images/bg-desktop-light.jpg";
@@ -25,12 +26,17 @@ import { Typography, TextField } from "@mui/material";
 import { theme } from './theme/MainTheme';
 import './App.css';
 
-export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
+// Types
+import { TaskType } from "./types/TaskListType";
+
+export const ColorModeContext = createContext({ toggleColorMode: () => { } });
 
 function App() {
-  const [mode, setMode] = React.useState<"light" | "dark">("dark");
+  const [mode, setMode] = useState<"light" | "dark">("dark");
+  const [createTask, setCreateTask] = useState<string>("");
+  const [taskList, setTaskList] = useState<TaskType[]>([]);
 
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
@@ -39,7 +45,7 @@ function App() {
     []
   );
 
-  const [checked, setChecked] = React.useState([0]);
+  const [checked, setChecked] = useState([0]);
 
   const handleToggle = (value: number) => () => {
     const currentIndex = checked.indexOf(value);
@@ -54,6 +60,13 @@ function App() {
     setChecked(newChecked);
   };
 
+  const handleTaskCreation = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      setTaskList([...taskList, { id: taskList.length + 1, value: createTask, completed: false }]);
+      setCreateTask("");
+    }
+  }
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme(mode)}>
@@ -61,7 +74,7 @@ function App() {
         <Container maxWidth={false} disableGutters>
           <Box
             sx={{
-              height: "50vh",
+              height: "45vh",
               display: "flex",
               width: "100%",
               alignItems: "center",
@@ -76,7 +89,7 @@ function App() {
               direction="column"
               justifyContent="center"
               alignItems="center"
-              sx={{ marginTop: '5rem', '& > *': { width: '30%' } }}>
+              sx={{ '& > *': { width: '35%', position: 'relative' }, position: 'absolute', top: '4.2rem' }}>
               <Grid item >
                 <Grid container direction="row" justifyContent={"space-evenly"}>
                   <Grid item xs>
@@ -94,35 +107,56 @@ function App() {
                 </Grid>
               </Grid>
               <Grid mt={2}>
-                <TextField type="text" fullWidth placeholder="Create a new todo..." id="fullWidth" />
+                <TextField
+                  id="createTask"
+                  type="text"
+                  fullWidth
+                  placeholder="Create a new todo..."
+                  value={createTask}
+                  onChange={(e) => setCreateTask(e.target.value)}
+                  onKeyDown={handleTaskCreation}
+                />
               </Grid>
               <Grid item mt={2}>
-                <List sx={{ width: '100%' }}>
-                  {[0, 1, 2, 3, 4].map((value) => {
-                    const labelId = `checkbox-list-label-${value}`;
+                {taskList.length > 0 && <List sx={{ width: '100%', paddingBottom: '0px' }}>
+                  {taskList.map((task) => {
+                    const labelId = `checkbox-list-label-${task}`;
 
                     return (
                       <ListItem
-                        key={value}
+                        key={task.id}
                         disablePadding
                         divider
                       >
-                        <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                        <ListItemButton role={undefined} onClick={handleToggle(task.id)} dense>
                           <ListItemIcon>
                             <Checkbox
                               edge="start"
-                              checked={checked.indexOf(value) !== -1}
+                              checked={checked.indexOf(task.id) !== -1}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
                             />
                           </ListItemIcon>
-                          <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                          <ListItemText id={labelId} primary={task.value} />
                         </ListItemButton>
                       </ListItem>
                     );
                   })}
-                </List>
+                  <Grid item >
+                    <Grid container direction='row' justifyContent={'space-evenly'} sx={{ padding: '0.5rem' }}>
+                      <Grid item xs={3} md={3} lg={3}><Button variant="text" size='small' disabled>{taskList.filter(x => !x.completed).length} items left</Button></Grid>
+                      <Grid item xs={6} md={6} lg={6}>
+                        <Grid container justifyContent={'flex-start'} spacing={0}>
+                          <Grid item><Button variant="text" size='small'>All</Button></Grid>
+                          <Grid item> <Button variant="text" size='small'>Active</Button></Grid>
+                          <Grid item><Button variant="text" size='small'>Completed</Button></Grid>
+                        </Grid>
+                      </Grid>
+                      <Grid item xs={3} md={3} lg={3} ><Button variant="text" size='small'>Clear Completed</Button></Grid>
+                    </Grid>
+                  </Grid>
+                </List>}
               </Grid>
             </Grid>
           </Box>

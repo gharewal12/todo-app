@@ -68,6 +68,19 @@ export const theme = (mode: any) => createTheme({
             styleOverrides: {
                 root: getTextFieldStyle(mode),
             }
+        },
+        MuiButton: {
+            defaultProps: {
+                disableRipple: true
+            },
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                    color: ' hsl(234, 11%, 52%)',
+                    backgroundColor: 'transparent',
+                    fontWeight: 400
+                },
+            }
         }
     }
 });

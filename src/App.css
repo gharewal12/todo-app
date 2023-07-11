@@ -9,6 +9,12 @@
   color: white;
 }
 
-body{
+body {
   font-weight: 400 !important;
+}
+
+.MuiButton-root:hover,
+.MuiButton-root:active {
+  background-color: transparent !important;
+  color: hsl(220, 98%, 61%)
 }
