@@ -14,13 +14,16 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 // Images
 import BgWhite from "./images/bg-desktop-light.jpg";
 import BgDark from "./images/bg-desktop-dark.jpg";
-import { ReactComponent as Moon } from "./images/icon-moon.svg";
-import { ReactComponent as Sun } from "./images/icon-sun.svg";
-import { Typography, TextField } from "@mui/material";
+import { ReactComponent as MoonIcon } from "./images/icon-moon.svg";
+import { ReactComponent as SunIcon } from "./images/icon-sun.svg";
+import { ReactComponent as CheckIcon } from "./images/icon-check.svg";
 
 // Styles
 import { theme } from './theme/MainTheme';
@@ -45,19 +48,17 @@ function App() {
     []
   );
 
-  const [checked, setChecked] = useState([0]);
-
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
+  const handleToggle = (taskId: number) => () => {
+    setTaskList((prev) => {
+      return prev.map((x) => {
+        if (x.id === taskId) {
+          return {
+            ...x, completed: !x.completed
+          }
+        }
+        return x;
+      });
+    });
   };
 
   const handleTaskCreation = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -100,8 +101,8 @@ function App() {
                       onClick={colorMode.toggleColorMode}
                       color="inherit"
                     >
-                      {mode === "dark" && <Sun />}
-                      {mode === "light" && <Moon />}
+                      {mode === "dark" && <SunIcon />}
+                      {mode === "light" && <MoonIcon />}
                     </IconButton>
                   </Grid>
                 </Grid>
@@ -132,13 +133,16 @@ function App() {
                           <ListItemIcon>
                             <Checkbox
                               edge="start"
-                              checked={checked.indexOf(task.id) !== -1}
+                              checked={task.completed}
                               tabIndex={-1}
                               disableRipple
                               inputProps={{ 'aria-labelledby': labelId }}
+                              checkedIcon={<span style={task.completed ? { background: 'linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%))', borderRadius: '50%', padding: '0 7px 0 7px' } : {}}><CheckIcon /></span>}
+                              icon={<RadioButtonUncheckedIcon />}
+                              style={{}}
                             />
                           </ListItemIcon>
-                          <ListItemText id={labelId} primary={task.value} />
+                          <ListItemText id={labelId} sx={{ textDecorationLine: task.completed ? 'line-through' : '' }} primary={task.value} />
                         </ListItemButton>
                       </ListItem>
                     );
