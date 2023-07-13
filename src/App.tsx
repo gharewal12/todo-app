@@ -1,4 +1,4 @@
-import React, { useState, useMemo, createContext } from "react";
+import React, { useState, useMemo, createContext, useCallback } from "react";
 
 // MUI
 import CssBaseline from "@mui/material/CssBaseline";
@@ -38,6 +38,7 @@ function App() {
   const [mode, setMode] = useState<"light" | "dark">("dark");
   const [createTask, setCreateTask] = useState<string>("");
   const [taskList, setTaskList] = useState<TaskType[]>([]);
+  const [display, setDisplay] = useState<"all" | "active" | "completed">("all");
 
   const colorMode = useMemo(
     () => ({
@@ -66,6 +67,22 @@ function App() {
       setTaskList([...taskList, { id: taskList.length + 1, value: createTask, completed: false }]);
       setCreateTask("");
     }
+  }
+
+  const filteredList = useCallback(() => {
+    const filteredList = taskList;
+    switch (display) {
+      case "active":
+        return filteredList.filter(x => !x.completed);
+      case "completed":
+        return filteredList.filter(x => x.completed);
+      default:
+        return filteredList;
+    }
+  }, [display, taskList]);
+
+  const handleClearCompleted = () => {
+    setTaskList([...taskList.filter(x => !x.completed)]);
   }
 
   return (
@@ -120,7 +137,7 @@ function App() {
               </Grid>
               <Grid item mt={2}>
                 {taskList.length > 0 && <List sx={{ width: '100%', paddingBottom: '0px' }}>
-                  {taskList.map((task) => {
+                  {filteredList().map((task) => {
                     const labelId = `checkbox-list-label-${task}`;
 
                     return (
@@ -139,7 +156,6 @@ function App() {
                               inputProps={{ 'aria-labelledby': labelId }}
                               checkedIcon={<span style={task.completed ? { background: 'linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%))', borderRadius: '50%', padding: '0 7px 0 7px' } : {}}><CheckIcon /></span>}
                               icon={<RadioButtonUncheckedIcon />}
-                              style={{}}
                             />
                           </ListItemIcon>
                           <ListItemText id={labelId} sx={{ textDecorationLine: task.completed ? 'line-through' : '' }} primary={task.value} />
@@ -152,12 +168,12 @@ function App() {
                       <Grid item xs={3} md={3} lg={3}><Button variant="text" size='small' disabled>{taskList.filter(x => !x.completed).length} items left</Button></Grid>
                       <Grid item xs={6} md={6} lg={6}>
                         <Grid container justifyContent={'flex-start'} spacing={0}>
-                          <Grid item><Button variant="text" size='small'>All</Button></Grid>
-                          <Grid item> <Button variant="text" size='small'>Active</Button></Grid>
-                          <Grid item><Button variant="text" size='small'>Completed</Button></Grid>
+                          <Grid item><Button variant="text" size='small' onClick={() => setDisplay("all")} sx={display === "all" ? { color: 'hsl(220, 98%, 61%)' } : {}}>All</Button></Grid>
+                          <Grid item> <Button variant="text" size='small' onClick={() => setDisplay("active")} sx={display === "active" ? { color: 'hsl(220, 98%, 61%)' } : {}}>Active</Button></Grid>
+                          <Grid item><Button variant="text" size='small' onClick={() => setDisplay("completed")} sx={display === "completed" ? { color: 'hsl(220, 98%, 61%)' } : {}}>Completed</Button></Grid>
                         </Grid>
                       </Grid>
-                      <Grid item xs={3} md={3} lg={3} ><Button variant="text" size='small'>Clear Completed</Button></Grid>
+                      <Grid item xs={3} md={3} lg={3} ><Button variant="text" size='small' onClick={handleClearCompleted}>Clear Completed</Button></Grid>
                     </Grid>
                   </Grid>
                 </List>}
@@ -166,7 +182,7 @@ function App() {
           </Box>
         </Container>
       </ThemeProvider>
-    </ColorModeContext.Provider>
+    </ColorModeContext.Provider >
   );
 }
 
