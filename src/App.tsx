@@ -24,6 +24,7 @@ import BgDark from "./images/bg-desktop-dark.jpg";
 import { ReactComponent as MoonIcon } from "./images/icon-moon.svg";
 import { ReactComponent as SunIcon } from "./images/icon-sun.svg";
 import { ReactComponent as CheckIcon } from "./images/icon-check.svg";
+import { ReactComponent as CrossIcon } from "./images/icon-cross.svg";
 
 // Styles
 import { theme } from './theme/MainTheme';
@@ -145,8 +146,13 @@ function App() {
                         key={task.id}
                         disablePadding
                         divider
+                        secondaryAction={
+                          <IconButton edge="end" aria-label="delete" onClick={() => setTaskList([...taskList.filter(x => x.id !== task.id)])}>
+                            <CrossIcon />
+                          </IconButton>
+                        }
                       >
-                        <ListItemButton role={undefined} onClick={handleToggle(task.id)} dense>
+                        <ListItemButton role={undefined} dense>
                           <ListItemIcon>
                             <Checkbox
                               edge="start"
@@ -156,6 +162,7 @@ function App() {
                               inputProps={{ 'aria-labelledby': labelId }}
                               checkedIcon={<span style={task.completed ? { background: 'linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%))', borderRadius: '50%', padding: '0 7px 0 7px' } : {}}><CheckIcon /></span>}
                               icon={<RadioButtonUncheckedIcon />}
+                              onClick={handleToggle(task.id)}
                             />
                           </ListItemIcon>
                           <ListItemText id={labelId} sx={{ textDecorationLine: task.completed ? 'line-through' : '' }} primary={task.value} />

@@ -78,7 +78,12 @@ export const theme = (mode: any) => createTheme({
                     textTransform: 'none',
                     color: ' hsl(234, 11%, 52%)',
                     backgroundColor: 'transparent',
-                    fontWeight: 400
+                    fontWeight: 400,
+                    '&:hover': {
+                        // Define the CSS properties for hover state
+                        backgroundColor: 'transparent !important',
+                        color: mode === 'light' ? 'hsl(235, 24%, 19%)' : 'hsl(0, 0%, 98%)',
+                    },
                 },
             }
         }
