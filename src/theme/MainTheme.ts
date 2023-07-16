@@ -54,7 +54,10 @@ export const theme = (mode: any) => createTheme({
     components: {
         MuiTextField: {
             styleOverrides: {
-                root: getTextFieldStyle(mode),
+                root: {
+                    ...getTextFieldStyle(mode),
+                    borderRadius: '0.5rem'
+                }
             }
         },
         MuiOutlinedInput: {
@@ -66,7 +69,11 @@ export const theme = (mode: any) => createTheme({
         },
         MuiList: {
             styleOverrides: {
-                root: getTextFieldStyle(mode),
+                root: {
+                    ...getTextFieldStyle(mode),
+                    boxShadow: mode === 'dark' ? '0px 5px 10px  hsl(240, 21%, 7%)' : '0px 5px 10px hsl(236, 9%, 61%)',
+                    borderRadius: '0.5rem'
+                }
             }
         },
         MuiButton: {
@@ -93,7 +100,7 @@ export const theme = (mode: any) => createTheme({
 const getTextFieldStyle = (mode: string) => {
     if (mode === 'light') {
         return {
-            background: 'hsl(0, 0%, 98%)',
+            background: 'hsl(0, 0%, 100%)',
         };
     }
     else {

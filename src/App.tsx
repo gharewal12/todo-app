@@ -1,4 +1,8 @@
-import React, { useState, useMemo, createContext, useCallback } from "react";
+import React, { useState, useMemo, createContext, useCallback, RefObject } from "react";
+import { Identifier } from "dnd-core";
+
+//Components
+import { DndContainer } from "./DndContainer";
 
 // MUI
 import CssBaseline from "@mui/material/CssBaseline";
@@ -86,6 +90,45 @@ function App() {
     setTaskList([...taskList.filter(x => !x.completed)]);
   }
 
+  const renderListItem = useCallback((task: any, ref: RefObject<any>, handlerId: Identifier | null, index: number) => {
+    const labelId = `checkbox-list-label-${task}`;
+    return (
+      <ListItem
+        ref={ref} key={index} data-handler-id={handlerId}
+        disablePadding
+        divider
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete" onClick={() => { setTaskList([...taskList.filter(x => x.id !== task.id)]) }}>
+            <CrossIcon />
+          </IconButton>
+        }
+      >
+        <ListItemButton role={undefined} dense>
+          <ListItemIcon>
+            <Checkbox
+              edge="start"
+              checked={task.completed}
+              tabIndex={-1}
+              disableRipple
+              inputProps={{ 'aria-labelledby': labelId }}
+              checkedIcon={<span style={task.completed ? { background: 'linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%))', borderRadius: '50%', padding: '0 7px 0 7px' } : {}}><CheckIcon /></span>}
+              icon={<RadioButtonUncheckedIcon />}
+              onClick={handleToggle(task.id)}
+            />
+          </ListItemIcon>
+          <ListItemText id={labelId} sx={task.completed ? { textDecorationLine: 'line-through', color: 'hsl(235.2deg 13.66% 35.88%)' } : {}} primary={task.value} />
+        </ListItemButton>
+      </ListItem>)
+  }, [taskList]);
+
+  const updateCards = (cards: any) => {
+    const updatedCards = cards.map((data: any, index: any) => {
+      data.priority = index + 1;
+      return data;
+    })
+    setTaskList([...updatedCards]);
+  }
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme(mode)}>
@@ -109,7 +152,7 @@ function App() {
               justifyContent="center"
               alignItems="center"
               sx={{ '& > *': { width: '35%', position: 'relative' }, position: 'absolute', top: '4.2rem' }}>
-              <Grid item >
+              <Grid item>
                 <Grid container direction="row" justifyContent={"space-evenly"}>
                   <Grid item xs>
                     <Typography variant='h4' fontWeight={700} letterSpacing={'0.1em'} color={'#fff'}>T  O  D  O</Typography>
@@ -125,7 +168,7 @@ function App() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid mt={2}>
+              <Grid mt={3.5}>
                 <TextField
                   id="createTask"
                   type="text"
@@ -136,40 +179,10 @@ function App() {
                   onKeyDown={handleTaskCreation}
                 />
               </Grid>
-              <Grid item mt={2}>
-                {taskList.length > 0 && <List sx={{ width: '100%', paddingBottom: '0px' }}>
-                  {filteredList().map((task) => {
-                    const labelId = `checkbox-list-label-${task}`;
+              <Grid item mt={3.5}>
+                {taskList.length > 0 && <List sx={{ width: '100%', padding: '0px' }}>
+                  <DndContainer cards={filteredList()} setCards={updateCards} renderCard={renderListItem} cardGroup="TodoItem" />
 
-                    return (
-                      <ListItem
-                        key={task.id}
-                        disablePadding
-                        divider
-                        secondaryAction={
-                          <IconButton edge="end" aria-label="delete" onClick={() => setTaskList([...taskList.filter(x => x.id !== task.id)])}>
-                            <CrossIcon />
-                          </IconButton>
-                        }
-                      >
-                        <ListItemButton role={undefined} dense>
-                          <ListItemIcon>
-                            <Checkbox
-                              edge="start"
-                              checked={task.completed}
-                              tabIndex={-1}
-                              disableRipple
-                              inputProps={{ 'aria-labelledby': labelId }}
-                              checkedIcon={<span style={task.completed ? { background: 'linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%))', borderRadius: '50%', padding: '0 7px 0 7px' } : {}}><CheckIcon /></span>}
-                              icon={<RadioButtonUncheckedIcon />}
-                              onClick={handleToggle(task.id)}
-                            />
-                          </ListItemIcon>
-                          <ListItemText id={labelId} sx={{ textDecorationLine: task.completed ? 'line-through' : '' }} primary={task.value} />
-                        </ListItemButton>
-                      </ListItem>
-                    );
-                  })}
                   <Grid item >
                     <Grid container direction='row' justifyContent={'space-evenly'} sx={{ padding: '0.5rem' }}>
                       <Grid item xs={3} md={3} lg={3}><Button variant="text" size='small' disabled>{taskList.filter(x => !x.completed).length} items left</Button></Grid>
@@ -184,6 +197,7 @@ function App() {
                     </Grid>
                   </Grid>
                 </List>}
+                {taskList.length > 0 && <Grid item xs={12} md={12} lg={12} mt={6} sx={{ textAlign: 'center', color: 'hsl(234, 11%, 52%)' }}> <Typography fontSize={'small'}>Drag and drop to reorder list</Typography></Grid>}
               </Grid>
             </Grid>
           </Box>
