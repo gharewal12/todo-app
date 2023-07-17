@@ -20,7 +20,7 @@ export const theme = (mode: any) => createTheme({
                     disabled: 'rgba(0, 0, 0, 0.38)',
                 },
                 action: {
-                    active: 'hsl(0, 0%, 98%)',
+                    active: 'hsl(240deg 4.55% 91.37%)',
                     hover: 'hsl(0, 0%, 98%)',
                     selected: 'rgba(0, 0, 0, 0.08)',
                     disabled: 'rgba(0, 0, 0, 0.26)',
@@ -40,7 +40,7 @@ export const theme = (mode: any) => createTheme({
                     disabled: 'rgba(255, 255, 255, 0.5)',
                 },
                 action: {
-                    active: 'hsl(235, 24%, 19%)',
+                    active: 'rgba(255, 255, 255, 0.7)',
                     hover: 'hsl(235, 24%, 19%)',
                     selected: 'rgba(255, 255, 255, 0.16)',
                     disabled: 'rgba(255, 255, 255, 0.3)',
@@ -49,7 +49,8 @@ export const theme = (mode: any) => createTheme({
             }),
     },
     typography: {
-        fontFamily: 'Outfit, sans-serif',
+        fontFamily: 'Josefin Sans, sans-serif',
+        fontWeightBold: 400
     },
     components: {
         MuiTextField: {
@@ -64,6 +65,9 @@ export const theme = (mode: any) => createTheme({
             styleOverrides: {
                 notchedOutline: {
                     display: 'none'
+                },
+                input: {
+                    marginLeft: '0.9rem'
                 }
             }
         },
@@ -76,6 +80,13 @@ export const theme = (mode: any) => createTheme({
                 }
             }
         },
+        MuiListItemIcon: {
+            styleOverrides: {
+                root: {
+                    minWidth: '45px !important'
+                }
+            }
+        },
         MuiButton: {
             defaultProps: {
                 disableRipple: true
@@ -85,7 +96,7 @@ export const theme = (mode: any) => createTheme({
                     textTransform: 'none',
                     color: ' hsl(234, 11%, 52%)',
                     backgroundColor: 'transparent',
-                    fontWeight: 400,
+                    fontWeight: 700,
                     '&:hover': {
                         // Define the CSS properties for hover state
                         backgroundColor: 'transparent !important',

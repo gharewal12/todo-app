@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, styled } from '@mui/material/styles';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -36,6 +36,7 @@ import './App.css';
 
 // Types
 import { TaskType } from "./types/TaskListType";
+import InputAdornment from "@mui/material/InputAdornment";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => { } });
 
@@ -53,6 +54,10 @@ function App() {
     }),
     []
   );
+  const OutlinedCircle = styled(RadioButtonUncheckedIcon)(({ theme }) => ({
+    color: theme.palette.action.active,
+  }));
+
 
   const handleToggle = (taskId: number) => () => {
     setTaskList((prev) => {
@@ -112,11 +117,11 @@ function App() {
               disableRipple
               inputProps={{ 'aria-labelledby': labelId }}
               checkedIcon={<span style={task.completed ? { background: 'linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%))', borderRadius: '50%', padding: '0 7px 0 7px' } : {}}><CheckIcon /></span>}
-              icon={<RadioButtonUncheckedIcon />}
+              icon={<OutlinedCircle />}
               onClick={handleToggle(task.id)}
             />
           </ListItemIcon>
-          <ListItemText id={labelId} sx={task.completed ? { textDecorationLine: 'line-through', color: 'hsl(235.2deg 13.66% 35.88%)' } : {}} primary={task.value} />
+          <ListItemText id={labelId} sx={task.completed ? { textDecorationLine: 'line-through', color: mode === "light" ? 'hsl(235.71deg 10.45% 73.73%)' : 'hsl(235deg 10.26% 54.12%)' } : {}} primary={task.value} />
         </ListItemButton>
       </ListItem>)
   }, [taskList]);
@@ -177,6 +182,13 @@ function App() {
                   value={createTask}
                   onChange={(e) => setCreateTask(e.target.value)}
                   onKeyDown={handleTaskCreation}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <OutlinedCircle />
+                      </InputAdornment>
+                    )
+                  }}
                 />
               </Grid>
               <Grid item mt={3.5}>
