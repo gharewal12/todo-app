@@ -3,7 +3,8 @@ import type { CSSProperties, RefObject } from 'react'
 
 import Card from './Card'
 import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { MultiBackend } from 'react-dnd-multi-backend'
+import { HTML5toTouch } from 'rdndmb-html5-to-touch'
 import { Identifier } from 'dnd-core'
 
 export interface Item {
@@ -32,7 +33,7 @@ export const DndContainer = <T,>(props: DndContainerProps<T>) => {
     }
 
     return (
-        <DndProvider backend={HTML5Backend}>
+        <DndProvider backend={MultiBackend} options={HTML5toTouch}>
             {props.cards.map((card, index) => (
                 <Card
                     key={props.cardGroup + index.toString()}

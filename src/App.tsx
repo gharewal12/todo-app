@@ -50,7 +50,7 @@ function App() {
   /**To handle mobile view on change of screen width */
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 375) {
+      if (window.innerWidth >= 375 && window.innerWidth < 1440) {
         setMobileView(true);
       }
       else {
