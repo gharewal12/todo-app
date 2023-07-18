@@ -1,4 +1,4 @@
-import React, { useState, useMemo, createContext, useCallback, RefObject } from "react";
+import React, { useState, useMemo, createContext, useCallback, RefObject, useEffect } from "react";
 import { Identifier } from "dnd-core";
 
 //Components
@@ -45,7 +45,27 @@ function App() {
   const [createTask, setCreateTask] = useState<string>("");
   const [taskList, setTaskList] = useState<TaskType[]>([]);
   const [display, setDisplay] = useState<"all" | "active" | "completed">("all");
+  const [mobileView, setMobileView] = useState<boolean>(false);
 
+  /**To handle mobile view on change of screen width */
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 375) {
+        setMobileView(true);
+      }
+      else {
+        setMobileView(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  /**handling dark and light mode */
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
@@ -54,11 +74,12 @@ function App() {
     }),
     []
   );
+
   const OutlinedCircle = styled(RadioButtonUncheckedIcon)(({ theme }) => ({
     color: theme.palette.action.active,
   }));
 
-
+  /**Handle todo item completion */
   const handleToggle = (taskId: number) => () => {
     setTaskList((prev) => {
       return prev.map((x) => {
@@ -72,6 +93,7 @@ function App() {
     });
   };
 
+  /**To handle creation of a todo item */
   const handleTaskCreation = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       setTaskList([...taskList, { id: taskList.length + 1, value: createTask, completed: false }]);
@@ -79,6 +101,7 @@ function App() {
     }
   }
 
+  /**Filtering task list based on different filter */
   const filteredList = useCallback(() => {
     const filteredList = taskList;
     switch (display) {
@@ -91,10 +114,12 @@ function App() {
     }
   }, [display, taskList]);
 
+  /**To clear completed tasks from list */
   const handleClearCompleted = () => {
     setTaskList([...taskList.filter(x => !x.completed)]);
   }
 
+  /**Dynamic List item for drag and drop */
   const renderListItem = useCallback((task: any, ref: RefObject<any>, handlerId: Identifier | null, index: number) => {
     const labelId = `checkbox-list-label-${task}`;
     return (
@@ -103,7 +128,7 @@ function App() {
         disablePadding
         divider
         secondaryAction={
-          <IconButton edge="end" aria-label="delete" onClick={() => { setTaskList([...taskList.filter(x => x.id !== task.id)]) }}>
+          <IconButton edge="end" aria-label="delete" onClick={() => { setTaskList([...taskList.filter(x => x.id !== task.id)]) }} size={mobileView ? "small" : "medium"}>
             <CrossIcon />
           </IconButton>
         }
@@ -134,6 +159,14 @@ function App() {
     setTaskList([...updatedCards]);
   }
 
+
+  const actionButtonUI =
+    <Grid container sx={mobileView ? { justifyContent: 'space-around', padding: '0 2.8rem 0 2.3rem', height: '50px', alignItems: 'center' } : { justifyContent: 'flex-start' }} spacing={0}>
+      <Grid item><Button variant="text" size='small' onClick={() => setDisplay("all")} sx={display === "all" ? { color: 'hsl(220, 98%, 61%)' } : {}}>All</Button></Grid>
+      <Grid item> <Button variant="text" size='small' onClick={() => setDisplay("active")} sx={display === "active" ? { color: 'hsl(220, 98%, 61%)' } : {}}>Active</Button></Grid>
+      <Grid item><Button variant="text" size='small' onClick={() => setDisplay("completed")} sx={display === "completed" ? { color: 'hsl(220, 98%, 61%)' } : {}}>Completed</Button></Grid>
+    </Grid>
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme(mode)}>
@@ -150,22 +183,24 @@ function App() {
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
               flexWrap: 'wrap',
+              backgroundPositionX: mobileView ? '25%' : ''
             }}
           >
             <Grid container
               direction="column"
               justifyContent="center"
-              alignItems="center"
-              sx={{ '& > *': { width: '35%', position: 'relative' }, position: 'absolute', top: '4.2rem' }}>
+              alignItems={"center"}
+              sx={{ '& > *': { width: mobileView ? '80%' : '35%', position: 'relative' }, position: 'absolute', top: '4.2rem' }}>
               <Grid item>
-                <Grid container direction="row" justifyContent={"space-evenly"}>
+                <Grid container direction="row" justifyContent={mobileView ? "space-around" : "space-evenly"}>
                   <Grid item xs>
-                    <Typography variant='h4' fontWeight={700} letterSpacing={'0.1em'} color={'#fff'}>T  O  D  O</Typography>
+                    <Typography variant='h4' fontWeight={700} letterSpacing={'0.1em'} color={'#fff'} fontSize={mobileView ? '1.8rem' : '2.125rem'}>T  O  D  O</Typography>
                   </Grid>
-                  <Grid item >
+                  <Grid item>
                     <IconButton
                       onClick={colorMode.toggleColorMode}
                       color="inherit"
+                      size={mobileView ? "small" : "medium"}
                     >
                       {mode === "dark" && <SunIcon />}
                       {mode === "light" && <MoonIcon />}
@@ -196,19 +231,19 @@ function App() {
                   <DndContainer cards={filteredList()} setCards={updateCards} renderCard={renderListItem} cardGroup="TodoItem" />
 
                   <Grid item >
-                    <Grid container direction='row' justifyContent={'space-evenly'} sx={{ padding: '0.5rem' }}>
-                      <Grid item xs={3} md={3} lg={3}><Button variant="text" size='small' disabled>{taskList.filter(x => !x.completed).length} items left</Button></Grid>
-                      <Grid item xs={6} md={6} lg={6}>
-                        <Grid container justifyContent={'flex-start'} spacing={0}>
-                          <Grid item><Button variant="text" size='small' onClick={() => setDisplay("all")} sx={display === "all" ? { color: 'hsl(220, 98%, 61%)' } : {}}>All</Button></Grid>
-                          <Grid item> <Button variant="text" size='small' onClick={() => setDisplay("active")} sx={display === "active" ? { color: 'hsl(220, 98%, 61%)' } : {}}>Active</Button></Grid>
-                          <Grid item><Button variant="text" size='small' onClick={() => setDisplay("completed")} sx={display === "completed" ? { color: 'hsl(220, 98%, 61%)' } : {}}>Completed</Button></Grid>
-                        </Grid>
+                    <Grid container direction='row' sx={mobileView ? { justifyContent: 'space-between', padding: '0.5rem 1rem 0.5rem 1rem' } : { padding: '0.5rem', justifyContent: 'space-evenly' }}>
+                      <Grid item md={3} lg={3}><Button variant="text" size='small' disabled>{taskList.filter(x => !x.completed).length} items left</Button></Grid>
+                      {!mobileView && <Grid item xs={6} md={6} lg={6}>
+                        {actionButtonUI}
                       </Grid>
-                      <Grid item xs={3} md={3} lg={3} ><Button variant="text" size='small' onClick={handleClearCompleted}>Clear Completed</Button></Grid>
+                      }
+                      <Grid item md={3} lg={3} ><Button variant="text" size='small' onClick={handleClearCompleted}>Clear Completed</Button></Grid>
                     </Grid>
                   </Grid>
                 </List>}
+                {taskList.length > 0 && mobileView && <Grid item mt={3.5} sx={{ background: mode === 'light' ? 'hsl(0, 0%, 100%)' : 'hsl(237, 14%, 26%)', borderRadius: '0.5rem', boxShadow: mode === 'dark' ? '0px 5px 10px  hsl(240, 21%, 7%)' : '0px 5px 10px hsl(236, 9%, 61%)' }}>
+                  {actionButtonUI}
+                </Grid>}
                 {taskList.length > 0 && <Grid item xs={12} md={12} lg={12} mt={6} sx={{ textAlign: 'center', color: 'hsl(234, 11%, 52%)' }}> <Typography fontSize={'small'}>Drag and drop to reorder list</Typography></Grid>}
               </Grid>
             </Grid>

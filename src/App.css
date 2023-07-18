@@ -17,3 +17,9 @@ body {
   background-color: transparent !important;
   color: hsl(220, 98%, 61%)
 }
+
+@media screen and (max-width:375px) {
+  body, .MuiTypography-root {
+    font-size: '1rem !important';
+  }
+}
