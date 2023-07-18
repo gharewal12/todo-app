@@ -47,7 +47,7 @@ function App() {
   const [display, setDisplay] = useState<"all" | "active" | "completed">("all");
   const [mobileView, setMobileView] = useState<boolean>(false);
 
-  /**To handle mobile view on change of screen width */
+  /**Handle mobile view on change of screen width */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 375 && window.innerWidth < 1440) {
@@ -58,6 +58,8 @@ function App() {
       }
     };
 
+    /**Apply mobile view changes on component mount */
+    handleResize();
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -65,7 +67,7 @@ function App() {
     };
   }, []);
 
-  /**handling dark and light mode */
+  /**Handle dark and light mode */
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
@@ -93,7 +95,7 @@ function App() {
     });
   };
 
-  /**To handle creation of a todo item */
+  /**Handle creation of a todo item */
   const handleTaskCreation = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       setTaskList([...taskList, { id: taskList.length + 1, value: createTask, completed: false }]);
@@ -101,7 +103,7 @@ function App() {
     }
   }
 
-  /**Filtering task list based on different filter */
+  /**Filter task list based on different filter */
   const filteredList = useCallback(() => {
     const filteredList = taskList;
     switch (display) {
@@ -114,7 +116,7 @@ function App() {
     }
   }, [display, taskList]);
 
-  /**To clear completed tasks from list */
+  /**Delete completed tasks from list */
   const handleClearCompleted = () => {
     setTaskList([...taskList.filter(x => !x.completed)]);
   }
@@ -151,6 +153,7 @@ function App() {
       </ListItem>)
   }, [taskList]);
 
+  /**Update priority order for list item */
   const updateCards = (cards: any) => {
     const updatedCards = cards.map((data: any, index: any) => {
       data.priority = index + 1;
@@ -159,7 +162,7 @@ function App() {
     setTaskList([...updatedCards]);
   }
 
-
+  /**Reusable action button html */
   const actionButtonUI =
     <Grid container sx={mobileView ? { justifyContent: 'space-around', padding: '0 2.8rem 0 2.3rem', height: '50px', alignItems: 'center' } : { justifyContent: 'flex-start' }} spacing={0}>
       <Grid item><Button variant="text" size='small' onClick={() => setDisplay("all")} sx={display === "all" ? { color: 'hsl(220, 98%, 61%)' } : {}}>All</Button></Grid>
