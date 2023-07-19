@@ -14,7 +14,7 @@ This app provides the basic functionality to manage your daily to-do tasks with 
 
 ### Screenshot
 
-![](./images/screenshot.png)
+![](.src/images/screenshot.png)
 
 ### Links
 
