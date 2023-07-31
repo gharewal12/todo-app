@@ -41,7 +41,7 @@ This app provides the basic functionality to manage your daily to-do tasks with 
 - Semantic HTML5 markup
 - CSS custom properties
 - [React](https://reactjs.org/) - React JS library
-- [Typescript](https://www.typescriptlang.org/) - Typescript Libra
+- [Typescript](https://www.typescriptlang.org/) - Typescript library
 - [Material UI Components](https://mui.com/) - For styles
 - [Drag and Drop](https://www.npmjs.com/package/react-dnd-multi-backend) - For Drag and Drop functionality
 - GitHub pages for deployment
